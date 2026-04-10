@@ -1,13 +1,23 @@
-from langchain_community.document_loaders import PyPDFLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-
+import os
+from PyPDF2 import PdfReader
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 def process_pdfs(pdf_docs):
-    # Logic to load PDF and split into chunks
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
-    chunks = []
+    text = ""
+    # 1. Extract text from all uploaded PDFs
     for pdf in pdf_docs:
-        loader = PyPDFLoader(pdf)
-        pages = loader.load()
-        for page in pages:
-            chunks.extend(text_splitter.split_text(page.page_content))
+        pdf_reader = PdfReader(pdf)
+        for page in pdf_reader.pages:
+            content = page.extract_text()
+            if content:
+                text += content
+
+    # 2. Split text into manageable chunks
+    # This helps the AI find specific parts of the document
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=1000,
+        chunk_overlap=200,
+        length_function=len
+    )
+    chunks = text_splitter.split_text(text)
+    
     return chunks
