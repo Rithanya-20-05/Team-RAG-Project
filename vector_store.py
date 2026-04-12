@@ -2,18 +2,21 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 
 def create_vector_store(chunks):
-    # 1. The Embedding Model (This is the 'Encoder')
-    # This turns your text chunks into numbers (vectors)
-    # We use a free, lightweight model from HuggingFace
+    # This must be indented
+    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    vector_db = FAISS.from_texts(texts=chunks, embedding=embeddings)
+    vector_db.save_local("faiss_index")
+    return vector_db
+
+def load_vector_store():
+    # Make sure these lines are indented 4 spaces!
     embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     
-    # 2. The Vector Database (The 'Storage')
-    # This creates a FAISS index which is super fast for searching
-    vector_db = FAISS.from_texts(texts=chunks, embedding=embeddings)
-    
-    # 3. Persistence
-    # This saves the DB as a folder so Person 4 can use it easily
-    vector_db.save_local("faiss_index")
-    
-    print("Vector Store created and saved locally!")
+    # allow_dangerous_deserialization is required for local loading
+    vector_db = FAISS.load_local(
+        "faiss_index", 
+        embeddings, 
+        allow_dangerous_deserialization=True
+    )
+    print("✅ Database loaded successfully!")
     return vector_db
