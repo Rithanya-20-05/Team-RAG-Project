@@ -59,7 +59,7 @@ with st.sidebar:
             st.warning("Please upload a file first.")
 
 # 4. Main Chat Area
-st.title("🤖 Mistral AI Assistant")
+st.title("🤖 Llama AI Assistant")
 st.markdown("---")
 
 if "messages" not in st.session_state:
@@ -78,13 +78,13 @@ if prompt := st.chat_input("Ask a question about your documents..."):
     # 6. Person 4's Integration
     if "vector_db" in st.session_state:
         with st.chat_message("assistant"):
-            with st.spinner("Mistral is thinking..."):
+            with st.spinner("Llama is thinking..."):
                 try:
                     answer = get_response(st.session_state.vector_db, prompt)
                     st.markdown(answer)
                     st.session_state.messages.append({"role": "assistant", "content": answer})
                     st.toast("✅ Person 4: Response Generated!")
                 except Exception as e:
-                    st.error("Mistral connection failed! Make sure 'ollama run mistral' is active.")
+                    st.error("Llama connection failed! Make sure 'ollama run llama3.2:3b' is active.")
     else:
         st.error("⚠️ Knowledge base not found. Please upload and process a PDF in the sidebar.")
