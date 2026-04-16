@@ -37,7 +37,7 @@ if "vector_db" not in st.session_state:
     if os.path.exists("faiss_index"):
         try:
             st.session_state.vector_db = load_vector_store()
-            st.sidebar.success("✅ Loaded existing Knowledge Base!")
+            st.sidebar.success("Loaded existing Knowledge Base!")
         except Exception as e:
             st.sidebar.error(f"Failed to load existing index: {e}")
 
@@ -54,12 +54,12 @@ with st.sidebar:
                 # Person 3's Logic
                 st.session_state.vector_db = create_vector_store(raw_chunks)
                 st.success(f"Ready! Created {len(raw_chunks)} chunks.")
-                st.info("Tasks Completed: Person 1 (UI), Person 2 (Data), Person 3 (DB)")
+              
         else:
             st.warning("Please upload a file first.")
 
 # 4. Main Chat Area
-st.title("🤖 Llama AI Assistant")
+st.title("Llama AI Assistant")
 st.markdown("---")
 
 if "messages" not in st.session_state:
@@ -83,8 +83,8 @@ if prompt := st.chat_input("Ask a question about your documents..."):
                     answer = get_response(st.session_state.vector_db, prompt)
                     st.markdown(answer)
                     st.session_state.messages.append({"role": "assistant", "content": answer})
-                    st.toast("✅ Person 4: Response Generated!")
+                    st.toast("Person 4: Response Generated!")
                 except Exception as e:
                     st.error("Llama connection failed! Make sure 'ollama run llama3.2:3b' is active.")
     else:
-        st.error("⚠️ Knowledge base not found. Please upload and process a PDF in the sidebar.")
+        st.error(" Knowledge base not found. Please upload and process a PDF in the sidebar.")

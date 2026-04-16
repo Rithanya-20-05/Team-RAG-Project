@@ -4,7 +4,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 def process_pdfs(pdf_docs):
     text = ""
-    # 1. Extracting text from all uploaded PDFs
+    # Extracting text from all uploaded PDFs
     for pdf in pdf_docs:
         pdf_reader = PdfReader(pdf)
         for page in pdf_reader.pages:
@@ -13,8 +13,8 @@ def process_pdfs(pdf_docs):
                 # Cleaning up extra spaces for better AI accuracy
                 text += " ".join(content.split()) + " "
 
-    # 2. Split text into manageable chunks
-    # 1000 chars is the ideal size for the Mistral model's memory
+    # Split text into manageable chunks
+    # 1000 chars 
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=1000,
         chunk_overlap=200,
