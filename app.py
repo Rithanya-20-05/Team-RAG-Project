@@ -80,12 +80,12 @@ with st.sidebar:
         </h1>
     """, unsafe_allow_html=True)
     
-    st.markdown('<p style="color: #22c55e; font-weight: bold; margin-top: 0px;">● System Ready</p>', unsafe_allow_html=True)
+    st.markdown('<p style="color: #22c55e; font-weight: bold; margin-top: 0px;">● Your Intelligent Research Partner</p>', unsafe_allow_html=True)
     st.divider()
     # Step 1 Section with Blue Card
     st.markdown('<div class="sidebar-section">', unsafe_allow_html=True)
     st.markdown("### upload PDFs")
-    uploaded_files = st.file_uploader("Upload PDFs", type="pdf", accept_multiple_files=True)
+    uploaded_files = st.file_uploader("Upload PDF files", type="pdf", accept_multiple_files=True)
     st.markdown('</div>', unsafe_allow_html=True)
     
     # Step 2 Section with Blue Card
@@ -106,6 +106,7 @@ with st.sidebar:
 
 # 4. Main Area
 st.title("Intelligent Document Assistant")
+st.markdown("Perform semantic search and Q&A on your documents locally")
 st.write("---")
 
 if "messages" not in st.session_state:
