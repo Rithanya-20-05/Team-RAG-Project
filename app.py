@@ -5,129 +5,131 @@ from vector_store import create_vector_store, load_vector_store
 from model_engine import get_response
 
 # 1. Page Config
-st.set_page_config(page_title="DocuMind Assistant", layout="wide")
+st.set_page_config(page_title="DocuMind Pro", layout="wide")
 
-# 2. User-Convenient Professional Light Theme
+# 2. Enhanced UI Styling with Color-Coded Chat
 st.markdown("""
     <style>
-    /* Main Background - Soft & Easy on eyes */
-    .stApp {
-        background-color: #fcfcfc;
-        color: #2d3436;
-    }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
     
-    /* Clean Sidebar */
+    html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
+    .stApp { background-color: #fcfcfc; }
+
+    /* --- Sidebar Enhancement --- */
     [data-testid="stSidebar"] {
         background-color: #ffffff !important;
-        border-right: 1px solid #edf2f7;
-    }
-
-    /* Titles - Bold & Clear */
-    h1 {
-        color: #1a202c !important;
-        font-weight: 800 !important;
-        letter-spacing: -0.5px;
-    }
-
-    /* Chat Bubbles - Modern & Distinct */
-    div[data-testid="stChatMessage"] {
-        background-color: #ffffff !important;
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        padding: 1.2rem !important;
-        margin-bottom: 1rem;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.03);
-    }
-
-    /* User Message - Slight Tint for Convenience */
-    div[data-testid="stChatMessage"][data-testid="user"] {
-        background-color: #f7fafc !important;
-    }
-
-    /* Buttons - Large & Accessible */
-    .stButton>button {
-        background-color: #3182ce !important;
-        color: white !important;
-        border-radius: 8px !important;
-        padding: 0.6rem 1rem !important;
-        font-weight: 600 !important;
-        border: none !important;
-        width: 100%;
-        transition: 0.2s ease;
+        border-right: 2px solid #e2e8f0;
     }
     
-    .stButton>button:hover {
-        background-color: #2b6cb0 !important;
-        transform: translateY(-1px);
+    /* Blue Sidebar Card Effect */
+    .sidebar-section {
+        background-color: #f0f7ff;
+        padding: 15px;
+        border-radius: 12px;
+        border-left: 5px solid #3b82f6;
+        margin-bottom: 20px;
     }
 
-    /* Chat Input - Fixed at Bottom */
-    div[data-testid="stChatInput"] {
-        border-radius: 12px !important;
-        border: 1px solid #cbd5e0 !important;
+    /* --- Chat Message Overrides --- */
+    /* User Message - Blue Theme */
+    .user-bubble {
+        background-color: #e0f2fe !important;
+        border: 1px solid #7dd3fc;
+        border-radius: 15px;
+        padding: 15px;
+        margin-bottom: 10px;
+        color: #0369a1;
+    }
+    
+    /* Assistant Message - Green Theme */
+    .assistant-bubble {
+        background-color: #f0fdf4 !important;
+        border: 1px solid #86efac;
+        border-radius: 15px;
+        padding: 15px;
+        margin-bottom: 10px;
+        color: #166534;
+    }
+
+    .label-text {
+        font-weight: 800;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    /* Button Styling */
+    .stButton>button {
+        background: #3b82f6 !important;
+        color: white !important;
+        border-radius: 8px !important;
+        font-weight: 700 !important;
+        width: 100%;
+        border: none !important;
     }
     </style>
     """, unsafe_allow_html=True)
 
-# 3. Sidebar - Simplified for Convenience
+# 3. Sidebar
 with st.sidebar:
-    st.markdown("# 🧠 DocuMind")
-    st.markdown('<p style="color: #38a169; font-weight: 600; font-size: 0.9rem;">🟢 System Ready</p>', unsafe_allow_html=True)
+    # Custom HTML for Bold and Big Branding
+    st.markdown("""
+        <h1 style='text-align: left; font-size: 2.8rem; font-weight: 800; margin-bottom: 0px;'>
+            DocuMind
+        </h1>
+    """, unsafe_allow_html=True)
+    
+    st.markdown('<p style="color: #22c55e; font-weight: bold; margin-top: 0px;">● System Ready</p>', unsafe_allow_html=True)
     st.divider()
+    # Step 1 Section with Blue Card
+    st.markdown('<div class="sidebar-section">', unsafe_allow_html=True)
+    st.markdown("### upload PDFs")
+    uploaded_files = st.file_uploader("Upload PDFs", type="pdf", accept_multiple_files=True)
+    st.markdown('</div>', unsafe_allow_html=True)
     
-    st.markdown("### 📤 Step 1: Upload")
-    uploaded_files = st.file_uploader("Upload PDFs", type="pdf", accept_multiple_files=True, help="You can upload multiple research papers here.")
-    
-    st.markdown("### ⚙️ Step 2: Setup")
-    if st.button("Process & Learn"):
+    # Step 2 Section with Blue Card
+    st.markdown('<div class="sidebar-section">', unsafe_allow_html=True)
+    st.markdown("### process & index")
+    if st.button("Process Documents"):
         if uploaded_files:
-            with st.spinner("Building your knowledge base..."):
+            with st.spinner("Processing..."):
                 raw_chunks = process_pdfs(uploaded_files)
                 st.session_state.vector_db = create_vector_store(raw_chunks)
-                st.success(f"Indexed {len(raw_chunks)} sections!")
+                st.success(f"Indexed {len(raw_chunks)} sections")
         else:
-            st.warning("Please upload a PDF first.")
+            st.warning("Upload first")
+    st.markdown('</div>', unsafe_allow_html=True)
 
     st.divider()
-    st.caption("v1.0 | Local Llama 3.2 Engine")
+    st.info("Llama 3.2 Engine | Local FAISS")
 
-# 4. Persistence Check
-if "vector_db" not in st.session_state:
-    if os.path.exists("faiss_index"):
-        try:
-            st.session_state.vector_db = load_vector_store()
-            st.sidebar.info("💡 Auto-loaded previous session data.")
-        except:
-            pass
-
-# 5. Main Area - Clean & Spaced
+# 4. Main Area
 st.title("Intelligent Document Assistant")
-st.write("Start a conversation with your documents. The AI will answer based on the provided context.")
-st.divider()
+st.write("---")
 
-# Initialize Chat
 if "messages" not in st.session_state:
-    st.session_state.messages = [{"role": "assistant", "content": "Hello! I have analyzed your documents. How can I help you today?"}]
+    st.session_state.messages = []
 
-# Display Chat
+# Display Messages with Custom Bubbles (No Icons)
 for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.write(message["content"])
+    if message["role"] == "user":
+        st.markdown(f"""<div class="user-bubble"><span class="label-text">USER</span>{message["content"]}</div>""", unsafe_allow_html=True)
+    else:
+        st.markdown(f"""<div class="assistant-bubble"><span class="label-text">ASSISTANT</span>{message["content"]}</div>""", unsafe_allow_html=True)
 
-# 6. User Input Logic
-if prompt := st.chat_input("Type your question here..."):
+# 5. User Input
+if prompt := st.chat_input("Ask a question..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.chat_message("user"):
-        st.write(prompt)
+    st.markdown(f"""<div class="user-bubble"><span class="label-text">USER</span>{prompt}</div>""", unsafe_allow_html=True)
     
     if "vector_db" in st.session_state:
-        with st.chat_message("assistant"):
-            with st.spinner("Searching documents..."):
-                try:
-                    answer = get_response(st.session_state.vector_db, prompt)
-                    st.write(answer)
-                    st.session_state.messages.append({"role": "assistant", "content": answer})
-                except:
-                    st.error("Connection Error: Please check if Ollama is running.")
+        with st.spinner("Assistant is typing..."):
+            try:
+                answer = get_response(st.session_state.vector_db, prompt)
+                st.markdown(f"""<div class="assistant-bubble"><span class="label-text">ASSISTANT</span>{answer}</div>""", unsafe_allow_html=True)
+                st.session_state.messages.append({"role": "assistant", "content": answer})
+            except:
+                st.error("Engine Error")
     else:
-        st.error("Please upload and process a document in the sidebar to start.")
+        st.error("Please upload documents.")
