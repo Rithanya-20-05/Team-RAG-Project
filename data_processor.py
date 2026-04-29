@@ -1,26 +1,45 @@
 import os
 from PyPDF2 import PdfReader
+from langchain.schema import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 def process_pdfs(pdf_docs):
-    text = ""
-    # Extracting text from all uploaded PDFs
+    """
+    Enhanced Processor: Captures metadata (source & page) 
+    so the AI can provide accurate citations.
+    """
+    all_docs = []
+    
+    # 1. Extract text while preserving metadata
     for pdf in pdf_docs:
+        file_name = getattr(pdf, 'name', 'Unknown_File')
         pdf_reader = PdfReader(pdf)
-        for page in pdf_reader.pages:
+        
+        for i, page in enumerate(pdf_reader.pages):
             content = page.extract_text()
             if content:
-                # Cleaning up extra spaces for better AI accuracy
-                text += " ".join(content.split()) + " "
+                # Clean the text
+                clean_content = " ".join(content.split())
+                
+                # Create a Document object for each page
+                # This stores the text AND the metadata together
+                all_docs.append(Document(
+                    page_content=clean_content,
+                    metadata={
+                        "source": file_name,
+                        "page": i  # 0-indexed page number
+                    }
+                ))
 
-    # Split text into manageable chunks
-    # 1000 chars 
+    # 2. Split documents into chunks while PRESERVING metadata
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=1000,
         chunk_overlap=200,
         length_function=len,
         separators=["\n\n", "\n", " ", ""]
     )
-    chunks = text_splitter.split_text(text)
     
-    return chunks
+    # split_documents automatically passes the metadata from all_docs to the chunks
+    final_chunks = text_splitter.split_documents(all_docs)
+    
+    return final_chunks

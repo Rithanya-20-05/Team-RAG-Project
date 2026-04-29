@@ -4,7 +4,7 @@ from langchain_community.vectorstores import FAISS
 def create_vector_store(chunks):
     
     embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-    vector_db = FAISS.from_texts(texts=chunks, embedding=embeddings)
+    vector_db = FAISS.from_documents(documents=chunks, embedding=embeddings)
     vector_db.save_local("faiss_index")
     return vector_db
 
