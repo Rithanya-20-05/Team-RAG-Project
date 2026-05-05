@@ -123,6 +123,12 @@ with st.sidebar:
     st.divider()
     st.caption("Llama 3.2 Engine | Local FAISS Store")
 
+    st.divider()
+    st.subheader("Session Statistics")
+    if 'vector_db' in st.session_state:
+        st.success("Index Active")
+    else:
+        st.warning("No Index Found")
 # 4. Persistence Check
 if "vector_db" not in st.session_state:
     if os.path.exists("faiss_index"):
@@ -139,7 +145,9 @@ st.write("---")
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
-
+if "first_load" not in st.session_state:
+    st.info("Welcome to DocuMind Pro! Upload your PDFs to start researching.")
+    st.session_state.first_load = True
 # Display Messages (History)
 for message in st.session_state.messages:
     role_class = "user-bubble" if message["role"] == "user" else "assistant-bubble"
