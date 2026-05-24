@@ -334,7 +334,7 @@ st.markdown("""
 with st.sidebar:
     st.markdown("""
         <div class="status-toast-card">
-            <span style="color:#0d9488; font-size:14px;">✔</span> Model loaded successfully
+            <span style="color:#0d9488; font-size:14px;"></span> Model loaded successfully
         </div>
     """, unsafe_allow_html=True)
 
