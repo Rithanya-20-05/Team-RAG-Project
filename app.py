@@ -9,7 +9,7 @@ from model_engine import get_response
 st.set_page_config(
     page_title="RAG Pipeline | DocuMind", 
     layout="wide", 
-    page_icon="🧠"
+    page_icon=""
 )
 
 # 2. Shared State Navigation Parameters Initialization
@@ -340,23 +340,23 @@ with st.sidebar:
 
     st.markdown("""
         <div class="sidebar-header">
-            <h1>🧠 Smart DocuMind</h1>
+            <h1> Smart DocuMind</h1>
             <p style='font-size: 11px; color: #475569; margin-top: 4px; font-weight:500;'>RAG Pipeline Intelligence</p>
         </div>
     """, unsafe_allow_html=True)
     
     # --- ACTIVE CLICKABLE NAVIGATION ROUTING CHANNELS ---
     if st.session_state.current_view == "Home Page":
-        st.button("🏠 Home", key="active_nav_home")
+        st.button(" Home", key="active_nav_home")
     else:
-        if st.button("🏠 Home", key="inactive_nav_home"):
+        if st.button(" Home", key="inactive_nav_home"):
             st.session_state.current_view = "Home Page"
             st.rerun()
 
     if st.session_state.current_view == "Ask AI / Query":
-        st.button("💬 Ask AI / Query", key="active_nav_chat")
+        st.button(" Ask AI / Query", key="active_nav_chat")
     else:
-        if st.button("💬 Ask AI / Query", key="inactive_nav_chat"):
+        if st.button(" Ask AI / Query", key="inactive_nav_chat"):
             st.session_state.current_view = "Ask AI / Query"
             st.rerun()
 
